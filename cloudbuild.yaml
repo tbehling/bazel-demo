@@ -1,0 +1,11 @@
+steps:
+- name: gcr.io/cloud-builders/bazel
+  args: ['test', '//...']
+- name: gcr.io/cloud-builders/bazel
+  args: ['run', 'hello-docker']
+# Re-tag the image to something in your project's gcr.io repository.
+- name: gcr.io/cloud-builders/docker
+  args: ['tag', 'bazel:hello-docker', 'gcr.io/$PROJECT_ID/hello']
+# Push the image.
+images:
+- 'gcr.io/$PROJECT_ID/hello'

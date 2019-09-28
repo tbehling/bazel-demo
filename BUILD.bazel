@@ -1,0 +1,46 @@
+load("@bazel_gazelle//:def.bzl", "gazelle")
+load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar", "pkg_deb")
+load("@io_bazel_rules_docker//container:container.bzl", "container_image")
+
+# gazelle:prefix github.com/tbehling/bazel-demo
+gazelle(name = "gazelle")
+
+pkg_tar(
+    name = "tar-hello-bin",
+    strip_prefix = "/cmd/hello/darwin_amd64_stripped",
+    package_dir = "/usr/bin",
+    srcs = ["//cmd/hello"],
+    mode = "0755",
+)
+
+pkg_tar(
+    name = "debian-data",
+    extension = "tar.gz",
+    deps = [
+        ":tar-hello-bin",
+    ],
+)
+
+pkg_deb(
+    name = "hello-debian",
+    architecture = "amd64",
+    built_using = "bazel",
+    data = ":debian-data",
+    depends = [
+        "glibc",
+    ],
+    description = "Hello tool",
+    maintainer = "Ted <tbehling@github.com>",
+    package = "hello",
+    version = "0.0.1",
+)
+
+container_image(
+    name = "hello-docker",
+    base = "@debian9//image",
+    files = [
+        "README.md",
+    ],
+    tars = [":debian-data"],
+    cmd = ["hello"],
+)
