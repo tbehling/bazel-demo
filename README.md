@@ -9,6 +9,12 @@ brew install bazelbuild/tap/bazel
 
 ### Build with Bazel
 
+Update 3rd-party Go deps for Bazel rules
+
+```
+bazel run //:gazelle -- update-repos -from_file=go.mod
+```
+
 Test Go, and run its CLI tool
 
 ```
@@ -20,12 +26,6 @@ Cross-compile Go binary for Linux (theoretical, unproven):
 
 ```
 bazel build --platforms=@io_bazel_rules_go//go/toolchain:linux_amd64 //cmd/hello
-```
-
-Update 3rd-party Go deps for Bazel rules
-
-```
-bazel run //:gazelle -- update-repos -from_file=go.mod
 ```
 
 Compile Go and build a Debian package (requires Python 2)
