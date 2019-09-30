@@ -9,6 +9,12 @@ brew install bazelbuild/tap/bazel
 
 ### Build with Bazel
 
+Download all Bazel external dependencies (optional)
+
+```
+bazel sync
+```
+
 Update 3rd-party Go deps for Bazel rules
 
 ```
@@ -22,7 +28,7 @@ bazel test //hello:go_default_test
 bazel run //cmd/hello
 ```
 
-Cross-compile Go binary for Linux (theoretical, unproven):
+Cross-compile Go binary for Linux:
 
 ```
 bazel build --platforms=@io_bazel_rules_go//go/toolchain:linux_amd64 //cmd/hello
@@ -31,13 +37,13 @@ bazel build --platforms=@io_bazel_rules_go//go/toolchain:linux_amd64 //cmd/hello
 Compile Go and build a Debian package (requires Python 2)
 
 ```
-bazel build :hello-debian --host_force_python=PY2
+bazel build --platforms=@io_bazel_rules_go//go/toolchain:linux_amd64 --host_force_python=PY2 //:hello-debian
 ```
 
 Compile Go and bundle it into a Docker image, and push to the local daemon
 
 ```
-bazel run :hello-docker
+bazel run --platforms=@io_bazel_rules_go//go/toolchain:linux_amd64 //:hello-docker
 ```
 
 ### Run Bazel under Docker
