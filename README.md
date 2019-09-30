@@ -55,3 +55,4 @@ bazel run --platforms=@io_bazel_rules_go//go/toolchain:linux_amd64 //:hello-dock
 docker pull gcr.io/cloud-builders/bazel
 docker run -w /workspace -v $(pwd):/workspace gcr.io/cloud-builders/bazel build //cmd/hello
 ```
+ 
