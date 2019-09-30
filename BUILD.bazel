@@ -7,7 +7,7 @@ gazelle(name = "gazelle")
 
 pkg_tar(
     name = "tar-hello-bin",
-    strip_prefix = "/cmd/hello/darwin_amd64_stripped",
+    strip_prefix = "/cmd/hello/linux_amd64_pure_stripped",
     package_dir = "/usr/bin",
     srcs = ["//cmd/hello"],
     mode = "0755",
