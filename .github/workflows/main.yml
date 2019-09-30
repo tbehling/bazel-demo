@@ -1,0 +1,15 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Run Bazel
+      uses: docker://gcr.io/cloud-builders/bazel
+      with:
+        args: test --batch --host_jvm_args=-Xmx500m --host_jvm_args=-Xms500m --local_resources=1536,1.5,0.5 --noshow_progress --verbose_failures --test_output=errors test //...
