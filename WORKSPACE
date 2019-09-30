@@ -83,6 +83,17 @@ load(
     "container_pull",
 )
 
+##### Packaging rules
+##### Copy/paste from https://github.com/bazelbuild/rules_pkg/tree/master/pkg#workspace-setup
+
+http_archive(
+    name = "rules_pkg",
+    url = "https://github.com/bazelbuild/rules_pkg/releases/0.1.0/rules_pkg-0.1.0.tar.gz",
+    sha256 = "752146e2813f4c135ec9f71b592bf98f96f026049e6d65248534dbeccb2448e1"
+)
+load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
+rules_pkg_dependencies()
+
 ##### Docker: Pull base containers
 
 container_pull(
