@@ -44,3 +44,15 @@ container_image(
     tars = [":debian-data"],
     cmd = ["hello"],
 )
+
+# same as hello-docker, but it pulls in the Debian package
+container_image(
+    name = "hello-docker-deb",
+    base = "@debian9//image",
+    files = [
+        "README.md",
+    ],
+    tars = [],
+    debs = [":hello-debian.deb"],
+    cmd = ["hello"],
+)
