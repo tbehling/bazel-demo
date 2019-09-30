@@ -1,57 +1,86 @@
-# WORKSPACE from docs at https://github.com/bazelbuild/rules_go#generating-build-files
-# and https://github.com/bazelbuild/bazel-gazelle#running-gazelle-with-bazel
+##### Go / Gazelle rules
+##### Copy/paste from https://github.com/bazelbuild/bazel-gazelle#running-gazelle-with-bazel
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "io_bazel_rules_go",
     urls = [
-        "https://storage.googleapis.com/bazel-mirror/github.com/bazelbuild/rules_go/releases/download/0.18.6/rules_go-0.18.6.tar.gz",
-        "https://github.com/bazelbuild/rules_go/releases/download/0.18.6/rules_go-0.18.6.tar.gz",
+        "https://storage.googleapis.com/bazel-mirror/github.com/bazelbuild/rules_go/releases/download/v0.19.5/rules_go-v0.19.5.tar.gz",
+        "https://github.com/bazelbuild/rules_go/releases/download/v0.19.5/rules_go-v0.19.5.tar.gz",
     ],
-    sha256 = "f04d2373bcaf8aa09bccb08a98a57e721306c8f6043a2a0ee610fd6853dcde3d",
+    sha256 = "513c12397db1bc9aa46dd62f02dd94b49a9b5d17444d49b5a04c5a89f3053c1c",
 )
 
 http_archive(
     name = "bazel_gazelle",
-    urls = ["https://github.com/bazelbuild/bazel-gazelle/releases/download/0.17.0/bazel-gazelle-0.17.0.tar.gz"],
-    sha256 = "3c681998538231a2d24d0c07ed5a7658cb72bfb5fd4bf9911157c0e9ac6a2687",
+    urls = [
+        "https://storage.googleapis.com/bazel-mirror/github.com/bazelbuild/bazel-gazelle/releases/download/0.18.2/bazel-gazelle-0.18.2.tar.gz",
+        "https://github.com/bazelbuild/bazel-gazelle/releases/download/0.18.2/bazel-gazelle-0.18.2.tar.gz",
+    ],
+    sha256 = "7fc87f4170011201b1690326e8c16c5d802836e3a0d617d8f75c3af2b23180c4",
 )
 
-# Download the rules_docker repository at release v0.7.0
+load("@io_bazel_rules_go//go:deps.bzl", "go_rules_dependencies", "go_register_toolchains")
+
+go_rules_dependencies()
+
+go_register_toolchains()
+
+load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
+
+gazelle_dependencies()
+
+##### Docker rules
+##### Copy/paste from https://github.com/bazelbuild/rules_docker#setup
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+# Download the rules_docker repository at release v0.10.1
 http_archive(
     name = "io_bazel_rules_docker",
-    sha256 = "aed1c249d4ec8f703edddf35cbe9dfaca0b5f5ea6e4cd9e83e99f3b0d1136c3d",
-    strip_prefix = "rules_docker-0.7.0",
-    urls = ["https://github.com/bazelbuild/rules_docker/archive/v0.7.0.tar.gz"],
+    sha256 = "9ff889216e28c918811b77999257d4ac001c26c1f7c7fb17a79bc28abf74182e",
+    strip_prefix = "rules_docker-0.10.1",
+    urls = ["https://github.com/bazelbuild/rules_docker/releases/download/v0.10.1/rules_docker-v0.10.1.tar.gz"],
 )
 
-load(
-    "@io_bazel_rules_docker//toolchains/docker:toolchain.bzl",
-    docker_toolchain_configure = "toolchain_configure",
+# OPTIONAL: Call this to override the default docker toolchain configuration.
+# This call should be placed BEFORE the call to "container_repositories" below
+# to actually override the default toolchain configuration.
+# Note this is only required if you actually want to call
+# docker_toolchain_configure with a custom attr; please read the toolchains
+# docs in /toolchains/docker/ before blindly adding this to your WORKSPACE.
+# BEGIN OPTIONAL segment:
+load("@io_bazel_rules_docker//toolchains/docker:toolchain.bzl",
+    docker_toolchain_configure="toolchain_configure"
 )
-
 docker_toolchain_configure(
-    name = "docker_config",
-    # OPTIONAL: Path to a directory which has a custom docker client config.json.
-    # See https://docs.docker.com/engine/reference/commandline/cli/#configuration-files
-    # for more details.
-    client_config = "/path/to/docker/client/config",
+  name = "docker_config",
+  # OPTIONAL: Path to a directory which has a custom docker client config.json.
+  # See https://docs.docker.com/engine/reference/commandline/cli/#configuration-files
+  # for more details.
+  client_config="<enter absolute path to your docker config directory here>",
 )
+# End of OPTIONAL segment.
 
-# This is NOT needed when going through the language lang_image
-# "repositories" function(s).
 load(
     "@io_bazel_rules_docker//repositories:repositories.bzl",
     container_repositories = "repositories",
 )
-
 container_repositories()
+
+# This is NOT needed when going through the language lang_image
+# "repositories" function(s).
+load("@io_bazel_rules_docker//repositories:deps.bzl", container_deps = "deps")
+
+container_deps()
 
 load(
     "@io_bazel_rules_docker//container:container.bzl",
     "container_pull",
 )
+
+##### Docker: Pull base containers
 
 container_pull(
     name = "debian9",
@@ -61,15 +90,7 @@ container_pull(
     tag = "latest",
 )
 
-load("@io_bazel_rules_go//go:deps.bzl", "go_rules_dependencies", "go_register_toolchains")
-
-go_rules_dependencies()
-
-go_register_toolchains()
-
-load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies", "go_repository")
-
-gazelle_dependencies()
+##### Auto generated by Gazelle for Go packages
 
 go_repository(
     name = "com_github_davecgh_go_spew",
