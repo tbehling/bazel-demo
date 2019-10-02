@@ -1,0 +1,3 @@
+build --host_force_python=PY2 --local_resources=1536,1.5,0.5 --noshow_progress --verbose_failures
+run --host_force_python=PY2 --local_resources=1536,1.5,0.5 --noshow_progress --verbose_failures
+test --local_resources=1536,1.5,0.5 --noshow_progress --verbose_failures --test_output=errors

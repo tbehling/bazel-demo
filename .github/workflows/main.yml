@@ -6,10 +6,22 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v1
-    - name: Run Bazel
-      uses: docker://gcr.io/cloud-builders/bazel
+
+    - name: Bazel: Run All Tests
+      uses: docker://gcr.io/cloud-builders/bazel:latest@sha256:d7d39d165490a04cbeb2273d366ed0054dc9ccf20662f637f3578de13d71ad1e
       with:
-        args: --batch --host_jvm_args=-Xmx500m --host_jvm_args=-Xms500m test //... --local_resources=1536,1.5,0.5 --noshow_progress --verbose_failures --test_output=errors
+        args: --batch --host_jvm_args=-Xmx500m --host_jvm_args=-Xms500m --bazelrc=.bazelrc-ci test //...
+
+    - name: Log into Docker GPR
+      if: github.ref == "master"
+      run: |
+        docker login docker.pkg.github.com -u {{ github.actor }} --password-stdin <<<"${{ secrets.GITHUB_TOKEN }}"
+
+    - name: Bazel: Push Docker to GPR
+      if: github.ref == "master"
+      uses: docker://gcr.io/cloud-builders/bazel:latest@sha256:d7d39d165490a04cbeb2273d366ed0054dc9ccf20662f637f3578de13d71ad1e
+      with:
+        args: --batch --host_jvm_args=-Xmx500m --host_jvm_args=-Xms500m --bazelrc=.bazelrc-ci run //:push-hello-docker
