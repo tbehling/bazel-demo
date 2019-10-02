@@ -18,7 +18,7 @@ jobs:
     - name: Log into Docker GPR
       if: github.ref == 'refs/heads/master'
       run: |
-        docker login docker.pkg.github.com -u "${{ secrets.GITHUB_PACKAGE_REGISTRY_USER }}" --password "${{ secrets.GITHUB_PACKAGE_REGISTRY_TOKEN }}"
+        docker login docker.pkg.github.com -u "${{ secrets.GITHUB_PACKAGE_REGISTRY_USER }}" --password-stdin <<<"${{ secrets.GITHUB_PACKAGE_REGISTRY_TOKEN }}"
 
     - name: "Bazel: Push Docker to GPR"
       if: github.ref == 'refs/heads/master'
