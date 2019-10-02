@@ -16,12 +16,12 @@ jobs:
         args: --batch --host_jvm_args=-Xmx500m --host_jvm_args=-Xms500m --bazelrc=.bazelrc-ci test //...
 
     - name: Log into Docker GPR
-      if: "github.ref == 'master'"
+      if: github.ref == 'refs/heads/master'
       run: |
         docker login docker.pkg.github.com -u {{ github.actor }} --password-stdin <<<"${{ secrets.GITHUB_TOKEN }}"
 
     - name: "Bazel: Push Docker to GPR"
-      if: "github.ref == 'master'"
+      if: github.ref == 'refs/heads/master'
       uses: docker://gcr.io/cloud-builders/bazel:latest@sha256:1db2e7f4e8ac25b59fd42ded7c652518ddb69356f75bc65a3e8d535ed151ac6b
       with:
         args: --batch --host_jvm_args=-Xmx500m --host_jvm_args=-Xms500m --bazelrc=.bazelrc-ci run //:push-hello-docker
