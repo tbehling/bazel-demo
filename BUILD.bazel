@@ -1,6 +1,6 @@
 load("@bazel_gazelle//:def.bzl", "gazelle")
 load("@rules_pkg//:pkg.bzl", "pkg_tar", "pkg_deb")
-load("@io_bazel_rules_docker//container:container.bzl", "container_image")
+load("@io_bazel_rules_docker//container:container.bzl", "container_image", "container_push")
 
 # gazelle:prefix github.com/tbehling/bazel-demo
 gazelle(name = "gazelle")
@@ -55,4 +55,13 @@ container_image(
     tars = [],
     debs = [":hello-debian.deb"],
     cmd = ["hello"],
+)
+
+container_push(
+   name = "push-hello-docker",
+   image = ":hello-docker-deb",
+   format = "Docker",
+   registry = "docker.pkg.github.com",
+   repository = "tbehling/bazel-demo/hello",
+   tag = "dev-{BUILD_TIMESTAMP}",
 )
