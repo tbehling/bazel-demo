@@ -65,7 +65,7 @@ docker_toolchain_configure(
     # TODO: this will fail outside of Actions;
     # make this use the $HOME env var from Actions
     #
-    client_config = "/github/home/.docker/config.json",
+    client_config = "/github/home/.docker",
 )
 # End of OPTIONAL segment.
 
