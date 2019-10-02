@@ -51,18 +51,22 @@ http_archive(
 # docker_toolchain_configure with a custom attr; please read the toolchains
 # docs in /toolchains/docker/ before blindly adding this to your WORKSPACE.
 # BEGIN OPTIONAL segment:
-# load(
-#     "@io_bazel_rules_docker//toolchains/docker:toolchain.bzl",
-#     docker_toolchain_configure = "toolchain_configure",
-# )
-#
-# docker_toolchain_configure(
-#     name = "docker_config",
-#     # OPTIONAL: Path to a directory which has a custom docker client config.json.
-#     # See https://docs.docker.com/engine/reference/commandline/cli/#configuration-files
-#     # for more details.
-#     client_config = "<enter absolute path to your docker config directory here>",
-# )
+load(
+    "@io_bazel_rules_docker//toolchains/docker:toolchain.bzl",
+    docker_toolchain_configure = "toolchain_configure",
+)
+
+docker_toolchain_configure(
+    name = "docker_config",
+    # OPTIONAL: Path to a directory which has a custom docker client config.json.
+    # See https://docs.docker.com/engine/reference/commandline/cli/#configuration-files
+    # for more details.
+    #
+    # TODO: this will fail outside of Actions;
+    # make this use the $HOME env var from Actions
+    #
+    client_config = "/github/home/.docker/config.json",
+)
 # End of OPTIONAL segment.
 
 load(
