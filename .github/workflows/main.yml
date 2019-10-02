@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - name: Bazel: Run All Tests
+    - name: "Bazel: Run All Tests"
       uses: docker://gcr.io/cloud-builders/bazel:latest@sha256:d7d39d165490a04cbeb2273d366ed0054dc9ccf20662f637f3578de13d71ad1e
       with:
         args: --batch --host_jvm_args=-Xmx500m --host_jvm_args=-Xms500m --bazelrc=.bazelrc-ci test //...
@@ -20,7 +20,7 @@ jobs:
       run: |
         docker login docker.pkg.github.com -u {{ github.actor }} --password-stdin <<<"${{ secrets.GITHUB_TOKEN }}"
 
-    - name: Bazel: Push Docker to GPR
+    - name: "Bazel: Push Docker to GPR"
       if: github.ref == "master"
       uses: docker://gcr.io/cloud-builders/bazel:latest@sha256:d7d39d165490a04cbeb2273d366ed0054dc9ccf20662f637f3578de13d71ad1e
       with:
